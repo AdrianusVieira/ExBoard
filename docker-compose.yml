@@ -1,0 +1,50 @@
+# docker-compose.yml
+# This file defines the services that run in Docker for the Ex Board project.
+# For now we only have one service: the PostgreSQL database.
+# Later, if we need other services (e.g. Redis), they go here too.
+
+services:
+  db:
+    # Official PostgreSQL image, alpine = lightweight version
+    image: postgres:16-alpine
+    
+    # Name of the container — used to reference it in terminal commands
+    # e.g. docker exec -it ex-board-db psql ...
+    container_name: ex-board-db
+    
+    # Restart the container automatically if it crashes,
+    # but not if you manually stopped it
+    restart: unless-stopped
+    
+    # These values come from the .env file in the same folder.
+    # Never hardcode credentials directly here.
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    
+    # Maps port on your machine → port inside the container
+    # Format: "your-machine:container"
+    # So localhost:5432 talks to PostgreSQL inside Docker
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    
+    # Persists the database data even if the container is stopped or removed.
+    # Without this, all data would be lost every time the container restarts.
+    volumes:
+      - ex_board_data:/var/lib/postgresql/data
+    
+    # Checks if PostgreSQL is actually ready to accept connections.
+    # Docker will mark the container as "healthy" only after this passes.
+    # This matters when the .NET API starts — it waits for the db to be healthy.
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s   # check every 10 seconds
+      timeout: 5s     # fail if no response within 5 seconds
+      retries: 5      # mark as unhealthy after 5 consecutive failures
+
+# Named volumes are managed by Docker and persist on your machine.
+# To fully delete the data: docker compose down -v
+volumes:
+  ex_board_data:
+    name: ex_board_data
