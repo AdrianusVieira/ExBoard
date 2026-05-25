@@ -1,14 +1,14 @@
 import { EType } from '../enums/EType';
 
 // The data we expect when creating a category
-export interface CreateCategoryDto {
+export interface ICreateCategoryDto {
   name: string;
   type: EType;
   description?: string;
 }
 
 // The data we expect when updating a category (all fields optional)
-export interface UpdateCategoryDto {
+export interface IUpdateCategoryDto {
   name?: string;
   type?: EType;
   description?: string;
