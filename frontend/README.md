@@ -1,73 +1,73 @@
-# React + TypeScript + Vite
+# Ex Board — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+React application for Ex Board. Provides a filtered list of entries with income and outcome totals, and a categories management screen.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React + Vite + TypeScript
+- Tailwind CSS
+- TanStack Query
+- Zustand
+- React Router
+- Axios
+- Lucide React
 
-## React Compiler
+## Requirements
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Node.js 18+
+- Backend API running (see `backend/README.md`)
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+cp .env.example .env
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Running
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+npm run dev
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+The app will be available at `http://localhost:5173`.
+
+## Environment variables
+
+| Variable       | Description          | Default                 |
+| -------------- | -------------------- | ----------------------- |
+| `VITE_API_URL` | Backend API base URL | `http://localhost:3000` |
+
+## Screens
+
+### Entries (`/entries`)
+
+- Custom date range filter
+- Type filter pills (All, Income, Outcome)
+- Category filter dropdown
+- Income and outcome totals computed from the filtered list
+- Create, edit, duplicate, and delete entries
+- Credit purchases auto-generate monthly installments
+
+### Categories (`/categories`)
+
+- Create, edit, and delete categories
+- Each category has a type (Income or Outcome)
+
+## Feature structure
+
+```
+src/
+├── features/
+│   ├── entries/
+│   │   ├── components/   ← EntriesPage, EntryList, EntryCard, EntryForm, EntryFilters
+│   │   └── hooks/        ← useEntriesQuery, useEntriesPage
+│   └── categories/
+│       ├── components/   ← CategoriesPage, CategoryList, CategoryForm
+│       └── hooks/        ← useCategoriesQuery, useCategoriesPage
+├── services/             ← HTTP service, categories.service, entries.service
+├── shared/
+│   ├── interfaces/       ← IEntry, ICategory
+│   └── types/            ← TType, TMethod
+└── components/           ← shared UI components
 ```
