@@ -28,6 +28,7 @@ import { EntriesModule } from './entries/entries.module';
 
     // feature modules
     CategoriesModule,
+    EntriesModule,
 
     EntriesModule,
   ],
