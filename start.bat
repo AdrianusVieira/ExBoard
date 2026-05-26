@@ -1,0 +1,9 @@
+@echo off
+
+echo Starting Ex Board...
+
+echo Starting backend...
+start cmd /k "cd backend && npm run start:dev"
+
+echo Starting frontend...
+start cmd /k "cd frontend && npm run dev"
