@@ -14,6 +14,7 @@ export default interface IEntry {
   installmentNumber?: number;
   installmentTotal?: number;
   creditGroupId?: string;
+  recurrentId?: string;
   createdAt: string;
   updatedAt: string;
 }

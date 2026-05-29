@@ -20,6 +20,9 @@ const COLORS = {
   credit: {
     badge: "bg-[#faeeda] text-[#633806] border-[#fac775]",
   },
+  recurrent: {
+    badge: "bg-[#e1f5ee] text-[#0f6e56] border-[#6fcfae]",
+  },
   category: {
     badge: "bg-[#f5f5f7] text-[#6b6b80]",
   },
@@ -42,6 +45,7 @@ const EntryCard = ({
 }: Props) => {
   const isIncome = entry.type === EType.Income;
   const isCredit = entry.method === "credit";
+  const isRecurrent = !!entry.recurrentId;
   const colors = isIncome ? COLORS.income : COLORS.outcome;
 
   const handleDelete = () => {
@@ -71,6 +75,14 @@ const EntryCard = ({
           <span className={`text-xs ${COLORS.text.secondary}`}>
             {entry.date}
           </span>
+          {isRecurrent && (
+            <span
+              className={`text-xs px-2 py-0.5 rounded-full border ${COLORS.recurrent.badge}`}
+            >
+              <i className="ti ti-repeat text-xs mr-1" />
+              monthly
+            </span>
+          )}
           {isCredit && entry.installmentNumber && (
             <span
               className={`text-xs px-2 py-0.5 rounded-full border ${COLORS.credit.badge}`}

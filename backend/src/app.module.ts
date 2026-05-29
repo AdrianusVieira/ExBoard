@@ -5,6 +5,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { EntriesModule } from './entries/entries.module';
+import { RecurrentsModule } from './recurrents/recurrent.module';
 
 @Module({
   imports: [
@@ -26,11 +27,9 @@ import { EntriesModule } from './entries/entries.module';
       inject: [ConfigService],
     }),
 
-    // feature modules
     CategoriesModule,
     EntriesModule,
-
-    EntriesModule,
+    RecurrentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

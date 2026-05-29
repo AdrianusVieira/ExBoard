@@ -1,14 +1,17 @@
 import { useState, useMemo } from "react";
 import { useEntriesQuery } from "./useEntriesQuery";
+import { useRecurrentsQuery } from "../../recurrents/hooks/useRecurrentsQuery";
 import type IEntry from "../../../shared/interfaces/IEntry";
 import { EType } from "../../../shared/types/TType";
 import { getDefaultDates } from "../utils/filters";
 import type { ICreditEntryPayload } from "../../../services/entries.service";
 import type { IEntryPayload } from "../../../shared/interfaces/IEntryPayload";
+import type { ICreateRecurrentPayload } from "../../../shared/interfaces/IRecurrent";
 
 const useEntriesPage = () => {
   const { query, create, createCredit, update, remove, removeCredit } =
     useEntriesQuery();
+  const { create: createRecurrent } = useRecurrentsQuery();
 
   const { from: defaultFrom, to: defaultTo } = getDefaultDates();
 
@@ -19,6 +22,7 @@ const useEntriesPage = () => {
   const [editing, setEditing] = useState<IEntry | null>(null);
   const [duplicating, setDuplicating] = useState<IEntry | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [showRecurrentForm, setShowRecurrentForm] = useState(false);
 
   const filteredEntries = useMemo(() => {
     const entries = query.data ?? [];
@@ -67,6 +71,10 @@ const useEntriesPage = () => {
     setDuplicating(null);
   };
 
+  const handleCloseRecurrentForm = () => {
+    setShowRecurrentForm(false);
+  };
+
   const handleDuplicate = (entry: IEntry) => {
     setDuplicating(entry);
     setEditing(null);
@@ -83,6 +91,10 @@ const useEntriesPage = () => {
     setEditing(null);
     setDuplicating(null);
     setShowForm(true);
+  };
+
+  const handleNewRecurrent = () => {
+    setShowRecurrentForm(true);
   };
 
   const handleRemove = async (id: number) => {
@@ -106,6 +118,11 @@ const useEntriesPage = () => {
     handleCloseForm();
   };
 
+  const handleSubmitRecurrent = async (payload: ICreateRecurrentPayload) => {
+    await createRecurrent.mutateAsync(payload);
+    handleCloseRecurrentForm();
+  };
+
   return {
     dateFrom,
     dateTo,
@@ -117,6 +134,7 @@ const useEntriesPage = () => {
     filterType,
     loading: query.isLoading,
     showForm,
+    showRecurrentForm,
     totalIncome,
     totalOutcome,
     handleChangeDateFrom,
@@ -125,12 +143,15 @@ const useEntriesPage = () => {
     handleChangeFilterType,
     handleClearFilters,
     handleCloseForm,
+    handleCloseRecurrentForm,
     handleDuplicate,
     handleEdit,
     handleNewEntry,
+    handleNewRecurrent,
     handleRemove,
     handleRemoveCreditGroup,
     handleSubmit,
+    handleSubmitRecurrent,
   };
 };
 

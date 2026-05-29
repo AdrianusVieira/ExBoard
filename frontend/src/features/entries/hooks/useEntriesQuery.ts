@@ -8,6 +8,7 @@ import {
   deleteCreditGroup,
   type ICreditEntryPayload,
 } from "../../../services/entries.service";
+import { advanceRecurrents } from "../../../services/recurrents.service";
 import type { IEntryPayload } from "../../../shared/interfaces/IEntryPayload";
 
 export const useEntriesQuery = () => {
@@ -15,7 +16,12 @@ export const useEntriesQuery = () => {
 
   const query = useQuery({
     queryKey: ["entries"],
-    queryFn: getEntries,
+    queryFn: async () => {
+      // Advance recurrents before fetching so entries are always up to date.
+      // Idempotent on the backend — safe to call on every load.
+      await advanceRecurrents();
+      return getEntries();
+    },
   });
 
   const create = useMutation({

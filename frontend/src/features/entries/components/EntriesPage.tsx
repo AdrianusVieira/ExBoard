@@ -1,21 +1,18 @@
-import { NavLink } from "react-router-dom";
 import useEntriesPage from "../hooks/useEntriesPage";
 import { useCategoriesQuery } from "../../categories/hooks/useCategoriesQuery";
 import EntryList from "./EntryList";
 import EntryFilters from "./EntryFilters";
 import EntryForm from "./EntryForm";
+import RecurrentForm from "../../recurrents/components/RecurrentForm";
 import { formatAmount } from "../utils/amount";
 import { EType } from "../../../shared/types/TType";
+import Nav from "../../../shared/components/Nav";
 
 const TEXTS = {
-  brand: "Ex Board",
   title: "Entries",
-  nav: {
-    entries: "Entries",
-    categories: "Categories",
-  },
   buttons: {
     newEntry: "New entry",
+    newRecurrent: "Recurrent income",
   },
   totals: {
     income: "Income",
@@ -27,8 +24,6 @@ const TEXTS = {
 
 const COLORS = {
   bg: "bg-[#f0efea]",
-  nav: "bg-white border-b border-black/10",
-  border: "border-black/10",
   text: {
     primary: "text-[#1a1a2e]",
     secondary: "text-[#6b6b80]",
@@ -55,6 +50,7 @@ const EntriesPage = () => {
     filterType,
     loading,
     showForm,
+    showRecurrentForm,
     totalIncome,
     totalOutcome,
     handleChangeDateFrom,
@@ -63,12 +59,15 @@ const EntriesPage = () => {
     handleChangeFilterType,
     handleClearFilters,
     handleCloseForm,
+    handleCloseRecurrentForm,
     handleDuplicate,
     handleEdit,
     handleNewEntry,
+    handleNewRecurrent,
     handleRemove,
     handleRemoveCreditGroup,
     handleSubmit,
+    handleSubmitRecurrent,
   } = useEntriesPage();
 
   const { query: categoriesQuery } = useCategoriesQuery();
@@ -76,53 +75,30 @@ const EntriesPage = () => {
 
   const shouldRenderContent = !loading && !error;
 
-  const showLoading = () => (
-    <p className={`text-sm ${COLORS.text.secondary}`}>{TEXTS.loading}</p>
-  );
-
-  const showError = () => (
-    <p className="text-sm text-red-500">{TEXTS.loadError}</p>
-  );
-
   return (
     <div className={`min-h-screen ${COLORS.bg}`}>
-      <nav
-        className={`${COLORS.nav} px-6 py-3 flex items-center justify-between`}
-      >
-        <span className={`text-sm font-semibold ${COLORS.text.primary}`}>
-          {TEXTS.brand}
-        </span>
-        <div className="flex gap-1">
-          <NavLink
-            to="/entries"
-            className={({ isActive }) =>
-              `text-sm px-3 py-1.5 rounded-md transition-colors ${isActive ? "bg-[#f5f5f7] text-[#1a1a2e] font-medium" : "text-[#6b6b80] hover:text-[#1a1a2e]"}`
-            }
-          >
-            {TEXTS.nav.entries}
-          </NavLink>
-          <NavLink
-            to="/categories"
-            className={({ isActive }) =>
-              `text-sm px-3 py-1.5 rounded-md transition-colors ${isActive ? "bg-[#f5f5f7] text-[#1a1a2e] font-medium" : "text-[#6b6b80] hover:text-[#1a1a2e]"}`
-            }
-          >
-            {TEXTS.nav.categories}
-          </NavLink>
-        </div>
-      </nav>
+      <Nav />
 
       <div className="max-w-4xl mx-auto px-6 py-6 flex flex-col gap-6">
         <div className="flex items-center justify-between">
           <h1 className={`text-lg font-semibold ${COLORS.text.primary}`}>
             {TEXTS.title}
           </h1>
-          <button
-            onClick={handleNewEntry}
-            className="text-sm px-4 py-2 bg-[#534ab7] text-white rounded-md font-medium cursor-pointer"
-          >
-            {TEXTS.buttons.newEntry}
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={handleNewRecurrent}
+              className="text-sm px-4 py-2 border border-[#6fcfae] bg-[#e1f5ee] text-[#0f6e56] rounded-md font-medium cursor-pointer flex items-center gap-2"
+            >
+              <i className="ti ti-repeat text-sm" />
+              {TEXTS.buttons.newRecurrent}
+            </button>
+            <button
+              onClick={handleNewEntry}
+              className="text-sm px-4 py-2 bg-[#534ab7] text-white rounded-md font-medium cursor-pointer"
+            >
+              {TEXTS.buttons.newEntry}
+            </button>
+          </div>
         </div>
 
         {/* Totals */}
@@ -164,8 +140,10 @@ const EntriesPage = () => {
         />
 
         {/* List */}
-        {loading && showLoading()}
-        {error && showError()}
+        {loading && (
+          <p className={`text-sm ${COLORS.text.secondary}`}>{TEXTS.loading}</p>
+        )}
+        {error && <p className="text-sm text-red-500">{TEXTS.loadError}</p>}
         {shouldRenderContent && (
           <EntryList
             entries={entries}
@@ -177,7 +155,6 @@ const EntriesPage = () => {
         )}
       </div>
 
-      {/* Form modal */}
       {showForm && (
         <EntryForm
           categories={categories}
@@ -185,6 +162,14 @@ const EntriesPage = () => {
           editing={editing}
           onClose={handleCloseForm}
           onSubmit={handleSubmit}
+        />
+      )}
+
+      {showRecurrentForm && (
+        <RecurrentForm
+          categories={categories}
+          onClose={handleCloseRecurrentForm}
+          onSubmit={handleSubmitRecurrent}
         />
       )}
     </div>
